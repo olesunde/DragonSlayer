@@ -3,7 +3,7 @@
 #include <Camera.h>
 
 World::textureArray World::cellTextures = {
-    std::make_shared<TDT4102::Image>("assets/cellTextures/WHITE.png")
+    std::make_shared<TDT4102::Image>("assets/cellTextures/snow.png")
 };
 
 void World::rebuildDrawCache() {
