@@ -13,7 +13,7 @@ void Test::test() {
     const int windowWidth = 1000;
     const int windowHeight = 1000;
 
-    std::unique_ptr<TDT4102::Image> image = std::make_unique<TDT4102::Image>("assets/characters/KNIGHT/STANDARD.png");
+    std::unique_ptr<TDT4102::Image> image = std::make_unique<TDT4102::Image>("assets/characters/penguin/idle.png");
 
     while (!window.should_close()) {
         // Flytt spilleren

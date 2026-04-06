@@ -9,6 +9,14 @@
 class Camera;
 
 class World {
+public:
+    int tileSize = 100;
+    int rows = 50;
+    int cols = 50;
+    
+    void generate();
+    void draw(TDT4102::AnimationWindow& window, const Camera& camera);
+
 private:
     struct DrawTile {
         TDT4102::Point topLeft;
@@ -20,24 +28,10 @@ private:
         Count
     };
 
-    TDT4102::AnimationWindow& window;
     std::vector<std::vector<Tiletype>> world;
 
     std::vector<DrawTile> drawTiles;
-    std::array<std::shared_ptr<TDT4102::Image>, static_cast<std::size_t>(Tiletype::Count)> cellTextures;
+    using textureArray = std::array<std::shared_ptr<TDT4102::Image>, static_cast<std::size_t>(Tiletype::Count)>;
+    static textureArray cellTextures;
     void rebuildDrawCache();
-
-public:
-    World(TDT4102::AnimationWindow& window);
-    
-    static constexpr int tileSize = 100; // private?
-    static constexpr int rows = 50; // private?
-    static constexpr int cols = 50; // private?
-    
-    void generate();
-    void draw(const Camera& camera);
-
-    /*
-    bool isWalkable(int row, int col) const;
-    */
 };

@@ -14,8 +14,10 @@ src = [
 'Camera.cpp',
 'Character.cpp',
 'Dragonslayer.cpp',
+'Knight.cpp',
 'main.cpp',
 'Test.cpp',
+'Timer.cpp',
 'World.cpp'
 ]
 

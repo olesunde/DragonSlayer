@@ -74,3 +74,11 @@ CHECKPOINT før BOSS ellers starter man helt på nytt hvis man dør.
 DRAGON: spruter flammer. Endrer farge og uttrykk på halvt liv -> mer voldsomt angrep / høyere mer hektisk musikk.
 
 Dragen flykter når den har lite liv, du må jage den hektisk gjennom en mørk labyrint...
+
+
+TIPS fra Thomas: MVC-spill oppsett.
+
+
+ANIMASJON:
+
+De skal handle input likt. Men input skal leses ulikt.
