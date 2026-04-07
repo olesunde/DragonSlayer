@@ -1,84 +1,24 @@
 
 
+SÅ: Walrussmechanics (integrere bevegelse slik at den følger spilleren)
 
+SÅ: Bakgrunnsmusikk for walrussfight. Mer hektisk musikk når walruss har halvt liv.
 
-
-
-
-
-
-Lage character config
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Kan prøve å se om eg får til en moving background for å lage større map (også mye! kulere spill følelse)
-
-Legge til tekstur på bakken. Få chat til å lage pixelart (litt brostein, dekket med noe grønt, kankje litt blomster innimellom)
-Finne en kul WALL sprite. Lyset skal ikke gå gjennom WALL. Må derfor skaleres slik at spilleren er relativt stor. Må få til moving background.
-
-Lage figur før moving background. Få chat til å tegne figur.
-
-Lag fakkel som styrer synlighet (sikkert veldig vanskelig, men kult å prøve).
-
-Lage demo (noen som går gjennom mazen først) Kankje adde litt story? (bare litt monolog mellom demo og spiller)
-
-Adde timer (eller en alternativ måte for å vise at du må kjappe deg, ellers taper du, hele poenget)
-
-Helt til slutt lag secrets.
-
-
-
-storyLINE:
-
-Bli kjent med surroundings og utforsk, finn diverse objekter (sverd, rustning) og intereger med dem.
-Legg til en figur som forteller om den mystiske grotten, dens historie, FRYKT for dragen.
-Boss battle med dragen (dragen kan være ai, med flammer ut av munnen)
-Du kan ikke slå dragen, (sverdet blir ødelagt) må løpe ut, den personen du møtte i starten viser vei.
-Dragen følger etter deg. Du kommer til slutt ut på en åpen eng med blomster.
-FERDIG.
-
-BASICS:
-NÅ: 
-- Lag hver tile på kartet større. Lag figuren større (height og width)
-- Hvit bakgrunn.
-- Lag animasjon for bevegelse for knight til venstre, høyre frem og bak/mot skjermen.
-- Fiks smooth movements
-
-MÅL FOR IDAG: Lag en gresseng med riktig arkitektur for textures (maze og knight) og finpuss movement til Knight og collision.
-SÅ: LAG ET MØRKT ROM med LIGHT mechanics. Skal ha en torch.
-SÅ: Kamera som følger KNIGHT for optimal feel.
-SÅ: Dragemechanics (integrere bevegelse slik at den følger spilleren)
-
-SÅ: Bakgrunnsmusikk for grassplain, dungeon, dragonfight.
-
-DERETTER:
-OBJEKTER: Lage et sverd som kan svinges og et skjold. 
+OBJEKTER: Lage et sverd som kan svinges
 
 HEALTHBAR for knight, mulighet for å ta damage.
-CHECKPOINT før BOSS ellers starter man helt på nytt hvis man dør.
-
-DRAGON: spruter flammer. Endrer farge og uttrykk på halvt liv -> mer voldsomt angrep / høyere mer hektisk musikk.
-
-Dragen flykter når den har lite liv, du må jage den hektisk gjennom en mørk labyrint...
 
 
-TIPS fra Thomas: MVC-spill oppsett.
 
 
-ANIMASJON:
 
-De skal handle input likt. Men input skal leses ulikt.
+
+
+
+
+
+ANIMATION
+
+MVC? 
+
+Controller som håndterer userInput og walrussInput.

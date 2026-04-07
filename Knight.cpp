@@ -1,5 +1,6 @@
 #include <Knight.h>
 #include "AnimationWindow.h"
+#include <World.h>
 #include <memory>
 #include <array>
 #include <string>
@@ -10,10 +11,12 @@ Knight::Knight()
 
 CharacterConfig Knight::defaultConfig() {
 	CharacterConfig config;
-	config.spawnX = 0.f;
-	config.spawnY = 0.f;
 	config.width = 40.0f;
 	config.height = 40.0f;
+	const float mapCenterX = (World::cols * World::tileSize) * 0.5f;
+	const float mapCenterY = (World::rows * World::tileSize) * 0.5f;
+	config.spawnX = mapCenterX - config.width * 0.5f;
+	config.spawnY = mapCenterY - config.height * 0.5f;
 	config.speed = 100.0f;
 	config.sprite = std::make_shared<TDT4102::Image>("assets/characters/penguin/idle_down.png");
 	return config;

@@ -6,6 +6,7 @@ namespace TDT4102 {
     class AnimationWindow;
 }
 class Camera;
+class World;
 
 struct InputState {
     bool left = false;
@@ -40,10 +41,11 @@ public:
     explicit Character(CharacterConfig&& config);
     virtual ~Character() = default;
 
-    void update(float dt, const TDT4102::AnimationWindow& window);
-    void updatePosition(float dt, const InputState& input);
+    void update(float dt, const TDT4102::AnimationWindow& window, const World& world);
+    void updatePosition(float dt, const InputState& input, const World& world);
     void draw(TDT4102::AnimationWindow& window, const Camera& camera) const;
     void handleInput(const InputState& inputState);
+    bool isBlocked(const World& world, float x, float y, float width, float height) const;
 
     float getX() const { return x; }
     float getY() const { return y; }

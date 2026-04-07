@@ -18,6 +18,7 @@ src = [
 'main.cpp',
 'Test.cpp',
 'Timer.cpp',
+'Walruss.cpp',
 'World.cpp'
 ]
 

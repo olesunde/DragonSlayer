@@ -2,6 +2,7 @@
 #include <Dragonslayer.h>
 #include <Character.h>
 #include <Knight.h>
+#include <Walruss.h>
 #include <World.h>
 #include <Camera.h>
 #include <memory>
@@ -16,7 +17,7 @@ void Dragonslayer::run() {
     World world;
 
     std::vector<std::unique_ptr<Character>> characters;
-    characters.push_back(std::make_unique<Knight>());
+    characters = {std::make_unique<Knight>()};
 
     world.generate();
     
@@ -25,7 +26,7 @@ void Dragonslayer::run() {
         camera.follow(window, *characters.front());
 
         for (const std::unique_ptr<Character>& character : characters) {
-            character->update(dt, window);  
+            character->update(dt, window, world);  
         }
         
         world.draw(window, camera);
