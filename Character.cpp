@@ -12,15 +12,13 @@ Character::Character(CharacterConfig&& config)
       width(config.width),
       height(config.height),
       speed(config.speed),
-      direction(Direction::down),
-      animationState(AnimationState::idle),
       sprite(std::move(config.sprite)) {}
 
 void Character::update(float dt, const TDT4102::AnimationWindow& window, const World& world) {
     const InputState input = readInput(window);
-    handleInput(input);
     updatePosition(dt, input, world);
-    updateAnimation(dt);
+    activeAnimationKey = determineAnimationKey(input);
+    updateAnimation(dt, activeAnimationKey);
 }
 
 void Character::updatePosition(float dt, const InputState& input, const World& world) {
@@ -53,28 +51,10 @@ void Character::updatePosition(float dt, const InputState& input, const World& w
     }
 }
 
-void Character::handleInput(const InputState& inputState) {
-    animationState = AnimationState::idle;
-
-    if (inputState.left) {
-        direction = Direction::left;
-        animationState = AnimationState::walking;
-    }
-
-    if (inputState.right) {
-        direction = Direction::right;
-        animationState = AnimationState::walking;
-    }
-
-    if (inputState.up) {
-        direction = Direction::up;
-        animationState = AnimationState::walking;
-    }
-
-    if (inputState.down) {
-        direction = Direction::down;
-        animationState = AnimationState::walking;
-    }
+void Character::updateAnimation(float dt, const AnimationKey& key) {
+    animator.play(key);
+    animator.update(dt);
+    applyAnimationFrame(animator.getFrame());
 }
 
 void Character::setSprite(std::shared_ptr<TDT4102::Image> newSprite) {

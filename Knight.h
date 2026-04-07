@@ -24,9 +24,9 @@ private:
     static CharacterConfig defaultConfig();
     static std::array<std::shared_ptr<TDT4102::Image>, totalFrames> createStateDirectionSprites();
     InputState readInput(const TDT4102::AnimationWindow& window) const override;
-    void updateAnimation(float dt) override;
+    AnimationKey determineAnimationKey(const InputState& inputState) override;
+    void applyAnimationFrame(int frame) override;
 
     std::array<std::shared_ptr<TDT4102::Image>, totalFrames> sprites;
-    float animationTimer = 0.0f;
-    std::size_t currentWalkFrame = 0;
+    AnimationKey lastDirectionKey{AnimationState::idle, Direction::down};
 };

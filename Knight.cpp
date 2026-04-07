@@ -7,11 +7,21 @@
 
 Knight::Knight()
 	: Character(defaultConfig()),
-	  sprites(createStateDirectionSprites()) {}
+	  sprites(createStateDirectionSprites()) {
+	animator.addAnimation({AnimationState::idle, Direction::left}, Animation(0, 1, 0.12f));
+	animator.addAnimation({AnimationState::idle, Direction::right}, Animation(1, 1, 0.12f));
+	animator.addAnimation({AnimationState::idle, Direction::up}, Animation(2, 1, 0.12f));
+	animator.addAnimation({AnimationState::idle, Direction::down}, Animation(3, 1, 0.12f));
+
+	animator.addAnimation({AnimationState::walking, Direction::left}, Animation(4, 4, 0.12f));
+	animator.addAnimation({AnimationState::walking, Direction::right}, Animation(8, 4, 0.12f));
+	animator.addAnimation({AnimationState::walking, Direction::up}, Animation(12, 4, 0.12f));
+	animator.addAnimation({AnimationState::walking, Direction::down}, Animation(16, 4, 0.12f));
+}
 
 CharacterConfig Knight::defaultConfig() {
 	CharacterConfig config;
-	config.width = 40.0f;
+	config.width = 35.0f;
 	config.height = 40.0f;
 	const float mapCenterX = (World::cols * World::tileSize) * 0.5f;
 	const float mapCenterY = (World::rows * World::tileSize) * 0.5f;
@@ -29,6 +39,9 @@ std::array<std::shared_ptr<TDT4102::Image>, Knight::totalFrames> Knight::createS
 	// Filename pattern:
 	// idle: assets/characters/penguin/idle_{direction}.png
 	// walk: assets/characters/penguin/walk_{direction}_{0|1|2|3}.png
+    // walk: assets/characters/penguin/attack_{direction}_{0|1|2|3}.png
+    // walk: assets/characters/penguin/exhausted_{direction}_{0|1|2|3}.png
+    
 	std::size_t index = 0;
 	for (const char* directionName : directions) {
 		const std::string idlePath = "assets/characters/penguin/idle_" + std::string(directionName) + ".png";
@@ -46,48 +59,42 @@ std::array<std::shared_ptr<TDT4102::Image>, Knight::totalFrames> Knight::createS
 }
 
 InputState Knight::readInput(const TDT4102::AnimationWindow& window) const {
-	InputState input;
-	input.left = window.is_key_down(KeyboardKey::LEFT);
-	input.right = window.is_key_down(KeyboardKey::RIGHT);
-	input.up = window.is_key_down(KeyboardKey::UP);
-	input.down = window.is_key_down(KeyboardKey::DOWN);
+    InputState input;
+	input.left = window.is_key_down(KeyboardKey::A);
+	input.right = window.is_key_down(KeyboardKey::D);
+	input.up = window.is_key_down(KeyboardKey::W);
+	input.down = window.is_key_down(KeyboardKey::S);
 	return input;
 }
 
-void Knight::updateAnimation(float dt) {
-	constexpr float secondsPerFrame = 0.12f;
-	animationTimer += dt;
+AnimationKey Knight::determineAnimationKey(const InputState& inputState) {
+	AnimationKey key = lastDirectionKey;
+	key.state = AnimationState::idle;
 
-	while (animationTimer >= secondsPerFrame) {
-		animationTimer -= secondsPerFrame;
-		currentWalkFrame = (currentWalkFrame + 1u) % walkFramesPerDirection;
+	if (inputState.left) {
+		key.direction = Direction::left;
+		key.state = AnimationState::walking;
 	}
 
-	std::size_t directionOffset = 0u;
-
-	switch (direction) {
-	case Direction::left:
-		directionOffset = 0u;
-		break;
-	case Direction::right:
-		directionOffset = 1u;
-		break;
-	case Direction::up:
-		directionOffset = 2u;
-		break;
-	case Direction::down:
-		directionOffset = 3u;
-		break;
-    }
-
-	std::size_t spriteIndex = 0u;
-
-	if (animationState == AnimationState::walking) {
-		const std::size_t stateBase = totalIdleFrames;
-		spriteIndex = stateBase + directionOffset * walkFramesPerDirection + currentWalkFrame;
-	} else {
-		spriteIndex = directionOffset;
+	if (inputState.right) {
+		key.direction = Direction::right;
+		key.state = AnimationState::walking;
 	}
 
-	setSprite(sprites[spriteIndex]);
+	if (inputState.up) {
+		key.direction = Direction::up;
+		key.state = AnimationState::walking;
+	}
+
+	if (inputState.down) {
+		key.direction = Direction::down;
+		key.state = AnimationState::walking;
+	}
+
+	lastDirectionKey = key;
+	return key;
+}
+
+void Knight::applyAnimationFrame(int frame) {
+	setSprite(sprites.at(static_cast<std::size_t>(frame)));
 }

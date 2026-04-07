@@ -11,6 +11,8 @@ std_lib_facilities_dep = dependency('std_lib_facilities', fallback: ['std_lib_fa
 compiler_flags = ['-Wconversion', '-fdiagnostics-color=always', '-Werror=return-type', '-static']
 
 src = [
+'Animation/Animation.cpp',
+'Animation/Animator.cpp',
 'Camera.cpp',
 'Character.cpp',
 'Dragonslayer.cpp',

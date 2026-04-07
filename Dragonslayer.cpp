@@ -17,7 +17,11 @@ void Dragonslayer::run() {
     World world;
 
     std::vector<std::unique_ptr<Character>> characters;
-    characters = {std::make_unique<Knight>()};
+    auto knight = std::make_unique<Knight>();
+    auto walruss = std::make_unique<Walruss>();
+    walruss->setTarget(*knight);
+    characters.push_back(std::move(knight));
+    characters.push_back(std::move(walruss));
 
     world.generate();
     
