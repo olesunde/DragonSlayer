@@ -18,7 +18,7 @@ namespace TDT4102 {
         nk_color checkBoxColorActive = nk_rgba(150, 150, 150, 255);
 
     protected:
-        void update(nk_context* context) override;
+        void update(nk_context* context, bool& eventHandled) override;
     public:
         explicit CheckBox(TDT4102::Point location, unsigned int width, unsigned int height, std::string label);
         bool isSelected() const;

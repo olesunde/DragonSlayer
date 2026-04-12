@@ -17,7 +17,7 @@ namespace TDT4102 {
         nk_color boxColor = nk_rgba(50 , 50, 50, 255);
         nk_color borderColor = nk_rgba(50, 50, 50, 255);
     protected:
-        void update(nk_context* context) override;
+        void update(nk_context* context, bool& eventHandled) override;
     public:
         explicit TextBox(TDT4102::Point location, unsigned int width, unsigned int height, std::string initialText = "");
         std::string getText() const;

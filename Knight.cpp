@@ -27,19 +27,19 @@ CharacterConfig Knight::defaultConfig() {
 	config.height = 40.0f;
 	const float mapCenterX = (World::cols * World::tileSize) * 0.5f;
 	const float mapCenterY = (World::rows * World::tileSize) * 0.5f;
-	config.spawnX = mapCenterX - config.width * 0.5f;
-	config.spawnY = mapCenterY - config.height * 0.5f;
+	config.spawnX = mapCenterX * 0.5 - config.width * 0.5f;
+	config.spawnY = mapCenterY * 0.5 - config.height * 0.5f;
 	config.speed = 200.0f;
 	config.health = 100.0f;
 	config.maxHealth = 100.0f;
 	config.attackRange = 90.0f;
-	config.attackDamage = 100.0f;
-	config.attackCooldown = 0.5f;
+	config.attackDamage = 1000.0f;
+	config.attackCooldown = 0.75f;
     config.attackWidth = 50.f;
     config.attackHeight = 50.f;
 	config.attackEffect = std::make_shared<TDT4102::Image>("assets/characters/penguin/attack_effect.png");
 	config.sprite = std::make_shared<TDT4102::Image>("assets/characters/penguin/idle_down");
-    config.soundEffect = std::make_shared<TDT4102::Audio>("assets/Audio/penguin.mp3");
+    config.soundEffect = std::make_shared<TDT4102::Audio>("assets/Audio/penguin.wav");
 	return config;
 }
 
@@ -83,11 +83,9 @@ void Knight::drawHealthBar(TDT4102::AnimationWindow& window, const Camera& camer
 	(void)camera;
 	constexpr int barWidth = 260;
 	constexpr int barHeight = 22;
-	constexpr int marginLeft = 70;
-	constexpr int marginBottom = 30;
 
-	const int topY = window.height() - barHeight - marginBottom;
-	const int topX = marginLeft;
+	const int topX = 70;
+	const int topY = window.height() - barHeight - 20;
 
     const int fillWidth = static_cast<int>(static_cast<float>(barWidth) * static_cast<float>(getHealthRatio()));
     if (fillWidth > 0) {
@@ -96,7 +94,7 @@ void Knight::drawHealthBar(TDT4102::AnimationWindow& window, const Camera& camer
 
     const std::string healthBarPath = "assets/healthBar/penguin.png";
     std::unique_ptr<TDT4102::Image> healthImage = std::make_unique<TDT4102::Image>(healthBarPath);
-	window.draw_image({20, topY-12}, *healthImage, 45, 40);
+	window.draw_image({topX-50, topY-12}, *healthImage, 45, 40);
 }
 
 AnimationKey Knight::determineAnimationKey(const InputState& inputState) {
@@ -129,4 +127,9 @@ AnimationKey Knight::determineAnimationKey(const InputState& inputState) {
 
 void Knight::applyAnimationFrame(int frame) {
 	setSprite(sprites.at(static_cast<std::size_t>(frame)));
+}
+
+void Knight::setVictoryPose() {
+	const std::string penguinHeart = "assets/characters/penguin/heart.png";
+	setSprite(std::make_shared<TDT4102::Image>(penguinHeart));
 }

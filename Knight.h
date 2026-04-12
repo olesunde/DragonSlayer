@@ -12,7 +12,8 @@ namespace TDT4102 {
 class Knight : public Character {
 public:
     Knight();
-    
+    void setVictoryPose();
+
 private:
     static constexpr std::size_t idleFramesPerDirection = 1;
     static constexpr std::size_t walkFramesPerDirection = 4;

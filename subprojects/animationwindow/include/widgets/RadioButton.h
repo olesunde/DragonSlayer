@@ -18,7 +18,7 @@ namespace TDT4102 {
         nk_color radioColorActive = nk_rgba(150, 150, 150, 255);
         
     protected:
-        void update(nk_context* context) override;
+        void update(nk_context* contex, bool& eventHandled) override;
     public:
         explicit RadioButton(TDT4102::Point location, unsigned int width, unsigned int height, std::string label);
         bool isSelected() const;

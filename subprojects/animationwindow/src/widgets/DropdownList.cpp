@@ -14,14 +14,17 @@ std::string TDT4102::DropdownList::getSelectedValue() const {
     return options.at(selectedIndex);
 }
 
-void TDT4102::DropdownList::update(nk_context *context) {
+void TDT4102::DropdownList::update(nk_context *context, bool& eventHandled) {
     if (nk_combo_begin_label(context, options.at(selectedIndex).c_str(), nk_vec2(nk_widget_width(context), 200))) {
         nk_layout_row_dynamic(context, 35, 1);
         for(unsigned int i = 0; i < options.size(); i++) {
             if (nk_combo_item_label(context, options.at(i).c_str(), NK_TEXT_LEFT)) {
                 // selection changed
                 selectedIndex = i;
-                fire();
+                if(!eventHandled) {
+                    fire();
+                    eventHandled = true;
+                }
             }
         }
         nk_combo_end(context);

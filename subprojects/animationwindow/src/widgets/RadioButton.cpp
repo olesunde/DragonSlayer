@@ -5,7 +5,7 @@ TDT4102::RadioButton::RadioButton(TDT4102::Point location, unsigned int width, u
     TDT4102::Widget(location, width, height),
     label{std::move(label)} {}
 
-void TDT4102::RadioButton::update(nk_context *context) {
+void TDT4102::RadioButton::update(nk_context *context, bool& eventHandled) {
     if (nk_input_has_mouse_click_down_in_rect(&context->input, NK_BUTTON_RIGHT, context->current->layout->clip, true)) {
         isSelected_ = false;
     }
@@ -23,7 +23,10 @@ void TDT4102::RadioButton::update(nk_context *context) {
 
     if (nk_radio_label(context, label.data(), &isSelected_)) {
         isSelected_ = true;
-        fire();
+        if(!eventHandled) {
+            fire();
+            eventHandled = true;
+        }
     }
 
     nk_style_pop_color(context);

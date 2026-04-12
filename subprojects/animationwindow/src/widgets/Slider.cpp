@@ -12,7 +12,7 @@ int TDT4102::Slider::getValue() const {
     return value;
 }
 
-void TDT4102::Slider::update(nk_context *context) {
+void TDT4102::Slider::update(nk_context *context, bool& eventHandled) {
 
     struct nk_style* s = &context->style;    
     nk_style_push_color(context, &s->slider.bar_normal, sliderBarColor);
@@ -24,7 +24,10 @@ void TDT4102::Slider::update(nk_context *context) {
     nk_style_push_style_item(context, &s->slider.cursor_active, nk_style_item_color(sliderCursorColorActive));
 
     if (nk_slider_int(context, minValue, &value, maxValue, stepValue)) {
-        fire();
+        if(!eventHandled) {
+            fire();
+            eventHandled = true;
+        }
     }
 
     nk_style_pop_color(context);

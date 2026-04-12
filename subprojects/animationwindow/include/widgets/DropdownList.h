@@ -10,7 +10,7 @@ namespace TDT4102 {
         std::vector<std::string> options;
         unsigned int selectedIndex = 0;
     protected:
-        void update(nk_context* context) override;
+        void update(nk_context* context, bool& eventHandled) override;
     public:
         explicit DropdownList(TDT4102::Point location, unsigned int width, unsigned int height, std::vector<std::string> &initialOptions);
         std::string getSelectedValue() const;

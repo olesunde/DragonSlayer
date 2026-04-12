@@ -24,10 +24,10 @@ CharacterConfig Walruss::defaultConfig() {
 	CharacterConfig config;
 	config.width = 120.0f;
 	config.height = 70.0f;
-	const float mapCenterX = (World::cols * World::tileSize) * 0.8f;
-	const float mapCenterY = (World::rows * World::tileSize) * 0.8f;
-	config.spawnX = mapCenterX - config.width * 0.5f;
-	config.spawnY = mapCenterY - config.height * 0.5f;
+	const float mapCenterX = (World::cols * World::tileSize) * 0.5f;
+	const float mapCenterY = (World::rows * World::tileSize) * 0.5f;
+	config.spawnX = mapCenterX * 1.5 - config.width * 0.5f;
+	config.spawnY = mapCenterY * 1.5 - config.height * 0.5f;
 	config.speed = 60.0f;
 	config.health = 100.0f;
 	config.maxHealth = 100.0f;
@@ -38,7 +38,7 @@ CharacterConfig Walruss::defaultConfig() {
     config.attackHeight = 100.0f;
 	config.attackEffect = std::make_shared<TDT4102::Image>("assets/characters/walruss/attack_effect.png");
 	config.sprite = std::make_shared<TDT4102::Image>("assets/characters/walruss/left.png");
-    config.soundEffect = std::make_shared<TDT4102::Audio>("assets/Audio/walrus.mp3");
+    config.soundEffect = std::make_shared<TDT4102::Audio>("assets/Audio/walrus.wav");
 	return config;
 }
 
@@ -77,7 +77,7 @@ InputState Walruss::readInput(float dt, const TDT4102::AnimationWindow& window) 
 	const double dx = target->getCenterX() - getCenterX();
 	const double dy = target->getCenterY() - getCenterY();
     const double distance = std::sqrt(dx * dx + dy * dy);
-    const float windup = 0.25f;
+    const float windup = 0.35f;
 
 	if (std::fabs(dx) > 1.0f) {
 		input.right = dx > 0.0f;

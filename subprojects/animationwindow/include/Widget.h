@@ -26,7 +26,7 @@ namespace TDT4102 {
 
     protected:
         void fire();
-        virtual void update(nk_context* context) = 0;
+        virtual void update(nk_context* contex, bool& eventHandled) = 0;
         explicit Widget(TDT4102::Point position, unsigned int width, unsigned int height);
     public:
         void setCallback(std::function<void(void)> callback);

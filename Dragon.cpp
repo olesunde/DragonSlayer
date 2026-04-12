@@ -24,21 +24,21 @@ CharacterConfig Dragon::defaultConfig() {
 	CharacterConfig config;
 	config.width = 120.0f;
 	config.height = 70.0f;
-	const float mapCenterX = (World::cols * World::tileSize) * 0.8f;
-	const float mapCenterY = (World::rows * World::tileSize) * 0.8f;
-	config.spawnX = mapCenterX - config.width * 0.5f;
-	config.spawnY = mapCenterY - config.height * 0.5f;
-	config.speed = 220.0f;
-	config.health = 100.0f;
+	const float mapCenterX = (World::cols * World::tileSize) * 0.5f;
+	const float mapCenterY = (World::rows * World::tileSize) * 0.5f;
+	config.spawnX = mapCenterX * 1.5 - config.width * 0.5f;
+	config.spawnY = mapCenterY * 1.5 - config.height * 0.5f;
+	config.speed = 250.0f;
+	config.health = 1000.0f;
 	config.maxHealth = 1000.0f;
 	config.attackRange = 100.0f;
-	config.attackDamage = 17.0f;
+	config.attackDamage = 33.0f;
 	config.attackCooldown = 0.0f;
     config.attackWidth = 100.0f;
     config.attackHeight = 100.0f;
 	config.attackEffect = std::make_shared<TDT4102::Image>("assets/characters/dragon/attack_effect.png");
 	config.sprite = std::make_shared<TDT4102::Image>("assets/characters/dragon/left.png");
-    config.soundEffect = std::make_shared<TDT4102::Audio>("assets/Audio/dragon.mp3");
+    config.soundEffect = std::make_shared<TDT4102::Audio>("assets/Audio/dragon.wav");
 	return config;
 }
 
@@ -78,7 +78,7 @@ InputState Dragon::readInput(float dt, const TDT4102::AnimationWindow& window) {
 	const double dy = target->getCenterY() - getCenterY();
 
 	constexpr float idleDuration = 5.0f;
-	constexpr float moveDuration = 2.5f;
+	constexpr float moveDuration = 1.0f;
 	constexpr float cycleDuration = idleDuration + moveDuration;
 
     movementTimer += dt;
@@ -89,6 +89,7 @@ InputState Dragon::readInput(float dt, const TDT4102::AnimationWindow& window) {
 	const bool isMovingPhase = movementTimer >= idleDuration;
 
 	if (isMovingPhase) {
+		attackDirectionTimer = 0.0f;
 		if (std::fabs(dx) > 1.0) {
 			input.right = dx > 0.0;
 			input.left = dx < 0.0;
@@ -102,18 +103,27 @@ InputState Dragon::readInput(float dt, const TDT4102::AnimationWindow& window) {
 	}
 
 	input.attack = true;
+	constexpr float attackDirectionSwitchInterval = 0.5f;
+	attackDirectionTimer += dt;
+	while (attackDirectionTimer >= attackDirectionSwitchInterval) {
+		attackDirectionTimer -= attackDirectionSwitchInterval;
+		attackFacingRight = !attackFacingRight;
+	}
+
+	input.right = attackFacingRight;
+	input.left = !attackFacingRight;
 
 	return input;
 }
 
 void Dragon::drawHealthBar(TDT4102::AnimationWindow& window, const Camera& camera) const {
 	(void)camera;
-	constexpr int barWidth = 260;
-	constexpr int barHeight = 22;
-	constexpr int marginUpper = 30;
+	constexpr int barWidth = 600;
+	constexpr int barHeight = 15;
 
-	const int topY = marginUpper;
 	const int topX = window.width() * 0.25f;
+	const int topY = 30;
+	
 
     const int fillWidth = static_cast<int>(static_cast<float>(barWidth) * static_cast<float>(getHealthRatio()));
     if (fillWidth > 0) {
@@ -122,7 +132,7 @@ void Dragon::drawHealthBar(TDT4102::AnimationWindow& window, const Camera& camer
 
     const std::string healthBarPath = "assets/healthBar/dragon.png";
     std::unique_ptr<TDT4102::Image> healthImage = std::make_unique<TDT4102::Image>(healthBarPath);
-	window.draw_image({topX-12, marginUpper}, *healthImage, 45, 40);
+	window.draw_image({topX-50, topY-12}, *healthImage, 45, 40);
 }
 
 AnimationKey Dragon::determineAnimationKey(const InputState& inputState) {

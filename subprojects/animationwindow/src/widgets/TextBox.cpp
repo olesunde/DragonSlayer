@@ -1,6 +1,6 @@
 #include "widgets/TextBox.h"
 
-void TDT4102::TextBox::update(nk_context *context) {
+void TDT4102::TextBox::update(nk_context *context, bool& eventHandled) {
     struct nk_style* s = &context->style;
     nk_style_push_color(context, &s->edit.text_normal, textColor);
     nk_style_push_color(context, &s->edit.border_color, borderColor);

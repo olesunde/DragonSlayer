@@ -1,6 +1,6 @@
 #include "widgets/TextInput.h"
 
-void TDT4102::TextInput::update(nk_context *context) {
+void TDT4102::TextInput::update(nk_context *context, bool& eventHandled) {
     struct nk_style* s = &context->style;
     nk_style_push_color(context, &s->edit.text_normal, textColor);
     nk_style_push_color(context, &s->edit.text_hover, textColor);
@@ -13,7 +13,10 @@ void TDT4102::TextInput::update(nk_context *context) {
     // Detect whether any editing of the string has occurred
     // Nuklear only reports whether the text box has lost focus
     if(contents != previousContents) {
-        fire();
+        if(!eventHandled) {
+            fire();
+            eventHandled = true;
+        }
     }
     previousContents = contents;
 

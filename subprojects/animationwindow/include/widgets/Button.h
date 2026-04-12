@@ -18,7 +18,7 @@ namespace TDT4102 {
         nk_color buttonColorBorder = nk_rgba(35, 35, 35,255);
 
     protected:
-        void update(nk_context* context) override;
+        void update(nk_context* context, bool& eventHandled) override;
     public:
         explicit Button(TDT4102::Point location, unsigned int width, unsigned int height, std::string label);
         void setLabel(std::string newLabel);

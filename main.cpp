@@ -1,8 +1,8 @@
 
-#include <Dragonslayer.h>
+#include "Game.h"
 #include <Test.h>
 
 int main() {
-    Dragonslayer::run();
+    Game{}.run();
     return 0;
 }
