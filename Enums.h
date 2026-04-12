@@ -11,6 +11,10 @@ enum class Direction {
 enum class AnimationState {
     idle,
     walking,
-    attacking,
     dead
+};
+
+enum class Stage {
+    stage1,
+    stage2
 };

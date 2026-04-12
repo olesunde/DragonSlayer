@@ -11,6 +11,7 @@ struct InputState {
     bool right = false;
     bool up = false;
     bool down = false;
+    bool attack = false;
 };
 
 struct AnimationKey {
@@ -27,10 +28,19 @@ struct AnimationKey {
 };
 
 struct CharacterConfig {
-    float spawnX = 0.f;
-    float spawnY = 0.f;
-    float width = 0.f;
-    float height = 0.f;
-    float speed = 0.f;
+    float spawnX = 0.0f;
+    float spawnY = 0.0f;
+    float width = 0.0f;
+    float height = 0.0f;
+    float speed = 0.0f;
+    float health = 0.0f;
+    float maxHealth = 0.0f;
+    float attackRange = 0.0f;
+    float attackDamage = 0.0f;
+    float attackCooldown = 0.0f;
+    float attackWidth = 0.0f;
+    float attackHeight = 0.0f;
+    std::shared_ptr<TDT4102::Image> attackEffect;
     std::shared_ptr<TDT4102::Image> sprite;
+    std::shared_ptr<TDT4102::Audio> soundEffect;
 };

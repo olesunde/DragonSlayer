@@ -59,10 +59,7 @@ void World::generate() {
     world[9][9] = Tiletype::lower_right_corner;
 
     world[3][5] = Tiletype::blod;
-    world[2][5] = Tiletype::rock_with_grass;
-    world[5][7] = Tiletype::rock;
     world[2][6] = Tiletype::snow_rocks;
-    world[5][2] = Tiletype::rock;
     world[5][7] = Tiletype::skeleton;
     world[6][3] = Tiletype::snow_rocks;
     world[7][6] = Tiletype::ice;

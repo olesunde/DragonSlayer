@@ -1,11 +1,5 @@
 
-SÅ: Bakgrunnsmusikk for walrussfight. Mer hektisk musikk når walruss har halvt liv.
-
-OBJEKTER: Lage et sverd som kan svinges
-
-HEALTHBAR for knight, mulighet for å ta damage.
-
-CHECKLIST:
+CHECKLIST FØR INNLEVERING:
 
 const correctness.
 Private, Protected, Public functionality.

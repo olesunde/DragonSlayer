@@ -1,5 +1,6 @@
 #include <Knight.h>
 #include "AnimationWindow.h"
+#include <Camera.h>
 #include <World.h>
 #include <memory>
 #include <array>
@@ -8,7 +9,8 @@
 Knight::Knight()
 	: Character(defaultConfig()),
 	  sprites(createStateDirectionSprites()) {
-	animator.addAnimation({AnimationState::idle, Direction::left}, Animation(0, 1, 0.12f));
+
+	animator.addAnimation({AnimationState::idle, Direction::left}, Animation(0, 1, 0.12f)); // Finne en mer effektiv måte for initialisering
 	animator.addAnimation({AnimationState::idle, Direction::right}, Animation(1, 1, 0.12f));
 	animator.addAnimation({AnimationState::idle, Direction::up}, Animation(2, 1, 0.12f));
 	animator.addAnimation({AnimationState::idle, Direction::down}, Animation(3, 1, 0.12f));
@@ -27,13 +29,22 @@ CharacterConfig Knight::defaultConfig() {
 	const float mapCenterY = (World::rows * World::tileSize) * 0.5f;
 	config.spawnX = mapCenterX - config.width * 0.5f;
 	config.spawnY = mapCenterY - config.height * 0.5f;
-	config.speed = 100.0f;
-	config.sprite = std::make_shared<TDT4102::Image>("assets/characters/penguin/idle_down.png");
+	config.speed = 200.0f;
+	config.health = 100.0f;
+	config.maxHealth = 100.0f;
+	config.attackRange = 90.0f;
+	config.attackDamage = 100.0f;
+	config.attackCooldown = 0.5f;
+    config.attackWidth = 50.f;
+    config.attackHeight = 50.f;
+	config.attackEffect = std::make_shared<TDT4102::Image>("assets/characters/penguin/attack_effect.png");
+	config.sprite = std::make_shared<TDT4102::Image>("assets/characters/penguin/idle_down");
+    config.soundEffect = std::make_shared<TDT4102::Audio>("assets/Audio/penguin.mp3");
 	return config;
 }
 
 std::array<std::shared_ptr<TDT4102::Image>, Knight::totalFrames> Knight::createStateDirectionSprites() {
-	std::array<std::shared_ptr<TDT4102::Image>, totalFrames> loadedSprites{};
+	std::array<std::shared_ptr<TDT4102::Image>, totalFrames> loadedSprites;
 	const std::array<const char*, directionCount> directions = {"left", "right", "up", "down"};
 
 	// Filename pattern:
@@ -43,32 +54,53 @@ std::array<std::shared_ptr<TDT4102::Image>, Knight::totalFrames> Knight::createS
     // walk: assets/characters/penguin/exhausted_{direction}_{0|1|2|3}.png
     
 	std::size_t index = 0;
-	for (const char* directionName : directions) {
-		const std::string idlePath = "assets/characters/penguin/idle_" + std::string(directionName) + ".png";
+	for (const char* dir : directions) {
+		const std::string idlePath = "assets/characters/penguin/idle_" + std::string(dir) + ".png";
 		loadedSprites[index++] = std::make_shared<TDT4102::Image>(idlePath);
 	}
 
-	for (const char* directionName : directions) {
+	for (const char* dir : directions) {
 		for (std::size_t frame = 0; frame < walkFramesPerDirection; ++frame) {
-			const std::string walkPath = "assets/characters/penguin/walk_" + std::string(directionName) + "_" + std::to_string(frame) + ".png";
+			const std::string walkPath = "assets/characters/penguin/walk_" + std::string(dir) + "_" + std::to_string(frame) + ".png";
 			loadedSprites[index++] = std::make_shared<TDT4102::Image>(walkPath);
 		}
 	}
-
 	return loadedSprites;
 }
 
-InputState Knight::readInput(const TDT4102::AnimationWindow& window) const {
+InputState Knight::readInput(float dt, const TDT4102::AnimationWindow& window) {
+    (void)dt;
     InputState input;
 	input.left = window.is_key_down(KeyboardKey::A);
 	input.right = window.is_key_down(KeyboardKey::D);
 	input.up = window.is_key_down(KeyboardKey::W);
 	input.down = window.is_key_down(KeyboardKey::S);
+	input.attack = window.is_key_down(KeyboardKey::SPACE);
 	return input;
 }
 
+void Knight::drawHealthBar(TDT4102::AnimationWindow& window, const Camera& camera) const {
+	(void)camera;
+	constexpr int barWidth = 260;
+	constexpr int barHeight = 22;
+	constexpr int marginLeft = 70;
+	constexpr int marginBottom = 30;
+
+	const int topY = window.height() - barHeight - marginBottom;
+	const int topX = marginLeft;
+
+    const int fillWidth = static_cast<int>(static_cast<float>(barWidth) * static_cast<float>(getHealthRatio()));
+    if (fillWidth > 0) {
+        window.draw_rectangle({topX, topY}, fillWidth, barHeight, TDT4102::Color::dark_yellow);
+    }
+
+    const std::string healthBarPath = "assets/healthBar/penguin.png";
+    std::unique_ptr<TDT4102::Image> healthImage = std::make_unique<TDT4102::Image>(healthBarPath);
+	window.draw_image({20, topY-12}, *healthImage, 45, 40);
+}
+
 AnimationKey Knight::determineAnimationKey(const InputState& inputState) {
-	AnimationKey key = lastDirectionKey;
+	AnimationKey key = lastAnimationKey;
 	key.state = AnimationState::idle;
 
 	if (inputState.left) {
@@ -89,9 +121,9 @@ AnimationKey Knight::determineAnimationKey(const InputState& inputState) {
 	if (inputState.down) {
 		key.direction = Direction::down;
 		key.state = AnimationState::walking;
-	}
+    }
 
-	lastDirectionKey = key;
+	lastAnimationKey = key;
 	return key;
 }
 

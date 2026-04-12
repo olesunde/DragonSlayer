@@ -38,7 +38,3 @@ void Animation::update(float dt) {
 int Animation::getFrame() const {
     return startFrame + currentFrame;
 }
-
-bool Animation::isFinished() const {
-    return finished;
-}

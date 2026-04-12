@@ -15,6 +15,7 @@ src = [
 'Animation/Animator.cpp',
 'Camera.cpp',
 'Character.cpp',
+'Dragon.cpp',
 'Dragonslayer.cpp',
 'Knight.cpp',
 'main.cpp',

@@ -8,7 +8,6 @@ public:
     void reset();
     void update(float dt);
     int getFrame() const;
-    bool isFinished() const;
 
 private:
     int startFrame;

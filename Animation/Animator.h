@@ -17,5 +17,4 @@ public:
     void play(const AnimationKey& key);
     void update(float dt);
     int getFrame() const;
-    bool isFinished() const;
 };

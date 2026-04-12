@@ -13,7 +13,7 @@ void Test::test() {
     const int windowWidth = 1000;
     const int windowHeight = 1000;
 
-    std::unique_ptr<TDT4102::Image> image = std::make_unique<TDT4102::Image>("assets/characters/penguin/idle.png");
+    std::unique_ptr<TDT4102::Image> image = std::make_unique<TDT4102::Image>("assets/characters/penguin/attackEffect_down.png");
 
     while (!window.should_close()) {
         // Flytt spilleren
@@ -36,7 +36,7 @@ void Test::test() {
         int cameraY = y - windowHeight / 2 + playerSize / 2;
 
         // Tegn svart firkant (spilleren)
-        window.draw_image({x - cameraX, y - cameraY}, *image, playerSize, playerSize);
+        window.draw_image({x - cameraX, y - cameraY}, *image, playerSize, playerSize, 45.0f, {playerSize/2, playerSize/2});
 
         // Tegn en annen firkant i verden
         window.draw_rectangle(

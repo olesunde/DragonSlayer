@@ -19,7 +19,3 @@ void Animator::update(float dt) {
 int Animator::getFrame() const {
     return animations.at(currentKey).getFrame();
 }
-
-bool Animator::isFinished() const {
-    return animations.at(currentKey).isFinished();
-}
