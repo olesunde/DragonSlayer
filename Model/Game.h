@@ -9,7 +9,7 @@
 #include <vector>
 
 class Character;
-class Knight;
+class Penguin;
 class Walruss;
 class Dragon;
 
@@ -34,7 +34,7 @@ private:
     std::unordered_set<const Walruss*> countedDeadWalrusses;
 
     std::vector<std::shared_ptr<Character>> characters;
-    std::shared_ptr<Knight> knight = nullptr;
+    std::shared_ptr<Penguin> knight = nullptr;
     std::vector<std::shared_ptr<Walruss>> walrusses;
     std::shared_ptr<Dragon> dragon = nullptr;
     bool dragonSpawned = false;

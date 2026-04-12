@@ -1,12 +1,16 @@
-#include <Knight.h>
+#include "Penguin.h"
 #include "AnimationWindow.h"
 #include <Camera.h>
-#include <World.h>
+#include <filesystem>
+#include <fstream>
+#include <map>
 #include <memory>
 #include <array>
+#include <stdexcept>
 #include <string>
+#include <iostream>
 
-Knight::Knight()
+Penguin::Penguin()
 	: Character(defaultConfig()),
 	  sprites(createStateDirectionSprites()) {
 
@@ -21,37 +25,51 @@ Knight::Knight()
 	animator.addAnimation({AnimationState::walking, Direction::down}, Animation(16, 4, 0.12f));
 }
 
-CharacterConfig Knight::defaultConfig() {
+CharacterConfig Penguin::defaultConfig() {
 	CharacterConfig config;
-	config.width = 35.0f;
-	config.height = 40.0f;
-	const float mapCenterX = (World::cols * World::tileSize) * 0.5f;
-	const float mapCenterY = (World::rows * World::tileSize) * 0.5f;
-	config.spawnX = mapCenterX * 0.5 - config.width * 0.5f;
-	config.spawnY = mapCenterY * 0.5 - config.height * 0.5f;
-	config.speed = 200.0f;
-	config.health = 100.0f;
-	config.maxHealth = 100.0f;
-	config.attackRange = 90.0f;
-	config.attackDamage = 28.0f;
-	config.attackCooldown = 0.75f;
-    config.attackWidth = 50.f;
-    config.attackHeight = 50.f;
+	std::map<std::string, float> values;
+	const std::filesystem::path configPath = std::filesystem::path("Configs") / "penguin.txt";
+	std::ifstream file(configPath);
+	if (file) {
+		std::string line;
+		while (std::getline(file, line)) {
+			const std::size_t pos = line.find('=');
+			if (pos == std::string::npos) {
+				continue;
+			}
+
+			const std::string key = line.substr(0, pos);
+			const std::string value = line.substr(pos + 1);
+			try {
+				values[key] = std::stof(value);
+			} catch (const std::invalid_argument&) {
+				std::cerr << value << " kan ikke tolkes som en float" << std::endl;
+			}
+		}
+	}
+
+	config.width = values["width"];
+	config.height = values["height"];
+	config.spawnX = values["spawnX"];
+	config.spawnY = values["spawnY"];
+	config.speed = values["speed"];
+	config.health = values["health"];
+	config.maxHealth = values["maxHealth"];
+	config.attackRange = values["attackRange"];
+	config.attackDamage = values["attackDamage"];
+	config.attackCooldown = values["attackCooldown"];
+	config.damageCooldown = values["damageCooldown"];
+    config.attackWidth = values["attackWidth"];
+    config.attackHeight = values["attackHeight"];
 	config.attackEffect = std::make_shared<TDT4102::Image>("assets/characters/penguin/attack_effect.png");
 	config.sprite = std::make_shared<TDT4102::Image>("assets/characters/penguin/idle_down");
     config.soundEffect = std::make_shared<TDT4102::Audio>("assets/Audio/penguin.wav");
 	return config;
 }
 
-std::array<std::shared_ptr<TDT4102::Image>, Knight::totalFrames> Knight::createStateDirectionSprites() {
+std::array<std::shared_ptr<TDT4102::Image>, Penguin::totalFrames> Penguin::createStateDirectionSprites() {
 	std::array<std::shared_ptr<TDT4102::Image>, totalFrames> loadedSprites;
 	const std::array<const char*, directionCount> directions = {"left", "right", "up", "down"};
-
-	// Filename pattern:
-	// idle: assets/characters/penguin/idle_{direction}.png
-	// walk: assets/characters/penguin/walk_{direction}_{0|1|2|3}.png
-    // walk: assets/characters/penguin/attack_{direction}_{0|1|2|3}.png
-    // walk: assets/characters/penguin/exhausted_{direction}_{0|1|2|3}.png
     
 	std::size_t index = 0;
 	for (const char* dir : directions) {
@@ -68,18 +86,20 @@ std::array<std::shared_ptr<TDT4102::Image>, Knight::totalFrames> Knight::createS
 	return loadedSprites;
 }
 
-InputState Knight::readInput(float dt, const TDT4102::AnimationWindow& window) {
+InputState Penguin::readInput(float dt, const TDT4102::AnimationWindow& window) {
     (void)dt;
     InputState input;
 	input.left = window.is_key_down(KeyboardKey::A);
 	input.right = window.is_key_down(KeyboardKey::D);
 	input.up = window.is_key_down(KeyboardKey::W);
 	input.down = window.is_key_down(KeyboardKey::S);
-	input.attack = window.is_key_down(KeyboardKey::SPACE);
+	const bool attackDown = window.is_key_down(KeyboardKey::SPACE);
+	input.attack = attackDown && !attackWasDown;
+	attackWasDown = attackDown;
 	return input;
 }
 
-void Knight::drawHealthBar(TDT4102::AnimationWindow& window, const Camera& camera) const {
+void Penguin::drawHealthBar(TDT4102::AnimationWindow& window, const Camera& camera) const {
 	(void)camera;
 	constexpr int barWidth = 260;
 	constexpr int barHeight = 22;
@@ -97,7 +117,7 @@ void Knight::drawHealthBar(TDT4102::AnimationWindow& window, const Camera& camer
 	window.draw_image({topX-50, topY-12}, *healthImage, 45, 40);
 }
 
-AnimationKey Knight::determineAnimationKey(const InputState& inputState) {
+AnimationKey Penguin::determineAnimationKey(const InputState& inputState) {
 	AnimationKey key = lastAnimationKey;
 	key.state = AnimationState::idle;
 
@@ -125,11 +145,11 @@ AnimationKey Knight::determineAnimationKey(const InputState& inputState) {
 	return key;
 }
 
-void Knight::applyAnimationFrame(int frame) {
+void Penguin::applyAnimationFrame(int frame) {
 	setSprite(sprites.at(static_cast<std::size_t>(frame)));
 }
 
-void Knight::setVictoryPose() {
+void Penguin::setVictoryPose() {
 	const std::string penguinHeart = "assets/characters/penguin/heart.png";
 	setSprite(std::make_shared<TDT4102::Image>(penguinHeart));
 }

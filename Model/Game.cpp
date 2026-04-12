@@ -1,7 +1,7 @@
 #include "Game.h"
 #include <Character.h>
 #include <Dragon.h>
-#include <Knight.h>
+#include <Penguin.h>
 #include <Walruss.h>
 
 Game::Game() {
@@ -41,8 +41,6 @@ void Game::run() {
 
 void Game::restart() {
     window.setBackgroundColor(TDT4102::Color::black);
-    camera = Camera{};
-    world = World{};
 
     walrussKillCount = 0;
     currentStage = Stage::stage1;
@@ -55,7 +53,7 @@ void Game::restart() {
     dragon.reset();
     dragonSpawned = false;
 
-    knight = std::make_shared<Knight>();
+    knight = std::make_shared<Penguin>();
     characters.push_back(knight);
 
     spawnWalruss();
@@ -135,7 +133,7 @@ void Game::stage2() {
         return;
     }
 
-    constexpr float dragonSpawnDelaySeconds = 18.0f;
+    constexpr float dragonSpawnDelaySeconds = 17.0f;
     if (stage2ActiveTime < dragonSpawnDelaySeconds) {
         return;
     }

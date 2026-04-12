@@ -38,6 +38,7 @@ struct CharacterConfig {
     float attackRange = 0.0f;
     float attackDamage = 0.0f;
     float attackCooldown = 0.0f;
+    float damageCooldown = 0.0f;
     float attackWidth = 0.0f;
     float attackHeight = 0.0f;
     std::shared_ptr<TDT4102::Image> attackEffect;

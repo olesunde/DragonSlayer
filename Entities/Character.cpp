@@ -19,6 +19,7 @@ Character::Character(CharacterConfig&& config)
       attackRange(config.attackRange),
       attackDamage(config.attackDamage),
       attackCooldown(config.attackCooldown),
+      damageCooldown(config.damageCooldown),
       attackWidth(config.attackWidth),
       attackHeight(config.attackHeight),
       attackEffect(std::move(config.attackEffect)),
@@ -147,44 +148,17 @@ void Character::draw(TDT4102::AnimationWindow& window, const Camera& camera) con
 }
 
 bool Character::isBlocked(const World& world, float x, float y, float width, float height) const {
-    float left = x;
-    float right = x + width - 1;
-    float top = y;
-    float bottom = y + height - 1;
-
-    int leftCol = static_cast<int>(static_cast<int>(left) / World::tileSize);
-    int rightCol = static_cast<int>(static_cast<int>(right) / World::tileSize);
-    int topRow = static_cast<int>(static_cast<int>(top) / World::tileSize);
-    int bottomRow = static_cast<int>(static_cast<int>(bottom) / World::tileSize);
+    int leftCol = static_cast<int>(static_cast<int>(x) / World::tileSize);
+    int rightCol = static_cast<int>(static_cast<int>(x + width - 1) / World::tileSize);
+    int topRow = static_cast<int>(static_cast<int>(y) / World::tileSize);
+    int bottomRow = static_cast<int>(static_cast<int>(y + height - 1) / World::tileSize);
         
     const bool blockedByWorld = world.isBlockedTile(topRow, leftCol) ||
         world.isBlockedTile(topRow, rightCol) ||
         world.isBlockedTile(bottomRow, leftCol) ||
         world.isBlockedTile(bottomRow, rightCol);
 
-    if (blockedByWorld) {
-        return true;
-    }
-
-    for (const auto& [otherCharacter, timer] : targetDamageTimers) {
-        (void)timer;
-        if (!otherCharacter || otherCharacter.get() == this || otherCharacter->isDead()) {
-            continue;
-        }
-
-        const float otherLeft = otherCharacter->getX();
-        const float otherRight = otherLeft + otherCharacter->getWidth();
-        const float otherTop = otherCharacter->getY();
-        const float otherBottom = otherTop + otherCharacter->getHeight();
-
-        const bool overlapX = left < otherRight && right > otherLeft;
-        const bool overlapY = top < otherBottom && bottom > otherTop;
-        if (overlapX && overlapY) {
-            return true;
-        }
-    }
-
-    return false;
+    return blockedByWorld;
 }
 
 void Character::attackEnemy(TDT4102::AnimationWindow& window, const InputState& input) {

@@ -1,8 +1,14 @@
 
 #include "Game.h"
-#include <Test.h>
+#include <exception>
+#include <iostream>
 
 int main() {
-    Game{}.run();
-    return 0;
+    try {
+        Game{}.run();
+        return 0;
+    } catch (const std::exception& e) {
+        std::cerr << "Programmet krasjet: " << e.what() << std::endl;
+        return 1;
+    }
 }

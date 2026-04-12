@@ -54,17 +54,17 @@ void World::generate() {
     }
 
     world[0][0] = Tiletype::upper_left_corner;
-    world[0][9] = Tiletype::upper_right_corner;
-    world[9][0] = Tiletype::lower_left_corner;
-    world[9][9] = Tiletype::lower_right_corner;
+    world[0][12] = Tiletype::upper_right_corner;
+    world[6][0] = Tiletype::lower_left_corner;
+    world[6][12] = Tiletype::lower_right_corner;
 
     world[3][5] = Tiletype::blod;
-    world[2][6] = Tiletype::snow_rocks;
-    world[5][7] = Tiletype::skeleton;
-    world[6][3] = Tiletype::snow_rocks;
-    world[7][6] = Tiletype::ice;
-    world[7][7] = Tiletype::snow_rocks;
-    world[8][6] = Tiletype::snow_rocks;
+    world[2][2] = Tiletype::snow_rocks;
+    world[4][8] = Tiletype::skeleton;
+    world[5][1] = Tiletype::skeleton;
+    world[2][10] = Tiletype::snow_rocks;
+    world[3][4] = Tiletype::snow_rocks;
+    world[4][7] = Tiletype::snow_rocks;
 
     rebuildDrawCache();
 }

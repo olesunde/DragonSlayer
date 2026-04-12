@@ -37,8 +37,6 @@ private:
 	float spawnTimer = 0.0f;
 	float spawnFrameDuration = 0.25f;
 	AnimationKey lastAnimationKey{AnimationState::idle, Direction::down};
-	float attackDirectionTimer = 0.0f;
-	bool attackFacingRight = false;
 
 	const Character* target = nullptr;
 };

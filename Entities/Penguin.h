@@ -9,9 +9,9 @@ namespace TDT4102 {
     class AnimationWindow;
 }
 
-class Knight : public Character {
+class Penguin : public Character {
 public:
-    Knight();
+    Penguin();
     void setVictoryPose();
 
 private:
@@ -33,4 +33,5 @@ private:
 
     std::array<std::shared_ptr<TDT4102::Image>, totalFrames> sprites;
     AnimationKey lastAnimationKey{AnimationState::idle, Direction::down}; //kan settes i base
+    bool attackWasDown = false;
 };

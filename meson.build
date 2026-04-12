@@ -11,19 +11,20 @@ std_lib_facilities_dep = dependency('std_lib_facilities', fallback: ['std_lib_fa
 compiler_flags = ['-Wconversion', '-fdiagnostics-color=always', '-Werror=return-type', '-static']
 
 src = [
-'Camera.cpp',
-'Character.cpp',
-'Dragon.cpp',
-'Game.cpp',
-'Knight.cpp',
-'main.cpp',
-'Test.cpp',
-'Timer.cpp',
-'Walruss.cpp',
-'World.cpp',
-'Animation/Animation.cpp',
-'Animation/Animator.cpp'
+  'main.cpp',
+  'Entities/Character.cpp',
+  'Entities/Dragon.cpp',
+  'Entities/Walruss.cpp',
+  'Entities/Penguin.cpp',
+  'Model/Game.cpp',
+  'Model/Timer.cpp',
+  'View/Camera.cpp',
+  'World/World.cpp',
+  'Animation/Animation.cpp',
+  'Animation/Animator.cpp',
 ]
+
+incdir = include_directories('.', 'Entities', 'Model', 'View', 'World', 'Animation')
 
 if host_machine.system() == 'windows'
   ld_flags = ['-static', '-lstdc++exp']
@@ -31,4 +32,4 @@ else
   ld_flags = []
 endif
 
-exe = executable('program', src, dependencies : [std_lib_facilities_dep, animationwindow_dep], cpp_args : compiler_flags, link_args: ld_flags)
+exe = executable('program', src, include_directories : incdir, dependencies : [std_lib_facilities_dep, animationwindow_dep], cpp_args : compiler_flags, link_args: ld_flags)

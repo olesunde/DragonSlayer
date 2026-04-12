@@ -77,7 +77,7 @@ private:
     float attackRenderHeight = 0.0f;
 
     float attackTimer = 0.0f;
-    float damageCooldown = 0.5f;
+    float damageCooldown;
     bool isAttacking = false;
     float attackEffectTimer = 0.0f;
     float attackEffectDuration = 0.25f;

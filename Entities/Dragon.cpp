@@ -2,10 +2,15 @@
 #include "AnimationWindow.h"
 #include <Camera.h>
 #include <World.h>
+#include <filesystem>
+#include <fstream>
+#include <map>
 #include <memory>
 #include <array>
+#include <stdexcept>
 #include <string>
 #include <cmath>
+#include <iostream>
 
 Dragon::Dragon()
 	: Character(defaultConfig()),
@@ -22,20 +27,40 @@ Dragon::Dragon()
 
 CharacterConfig Dragon::defaultConfig() {
 	CharacterConfig config;
-	config.width = 120.0f;
-	config.height = 70.0f;
-	const float mapCenterX = (World::cols * World::tileSize) * 0.5f;
-	const float mapCenterY = (World::rows * World::tileSize) * 0.5f;
-	config.spawnX = mapCenterX * 1.5 - config.width * 0.5f;
-	config.spawnY = mapCenterY * 1.5 - config.height * 0.5f;
-	config.speed = 250.0f;
-	config.health = 1000.0f;
-	config.maxHealth = 1000.0f;
-	config.attackRange = 100.0f;
-	config.attackDamage = 33.0f;
-	config.attackCooldown = 0.0f;
-    config.attackWidth = 100.0f;
-    config.attackHeight = 100.0f;
+	std::map<std::string, float> values;
+	const std::filesystem::path configPath = std::filesystem::path("Configs") / "dragon.txt";
+	std::ifstream file(configPath);
+	if (file) {
+		std::string line;
+		while (std::getline(file, line)) {
+			const std::size_t pos = line.find('=');
+			if (pos == std::string::npos) {
+				continue;
+			}
+
+			const std::string key = line.substr(0, pos);
+			const std::string value = line.substr(pos + 1);
+			try {
+				values[key] = std::stof(value);
+			} catch (const std::invalid_argument&) {
+				std::cerr << value << " kan ikke tolkes som en float" << std::endl;
+			}
+		}
+	}
+
+	config.width = values["width"];
+	config.height = values["height"];
+	config.spawnX = values["spawnX"];
+	config.spawnY = values["spawnY"];
+	config.speed = values["speed"];
+	config.health = values["health"];
+	config.maxHealth = values["maxHealth"];
+	config.attackRange = values["attackRange"];
+	config.attackDamage = values["attackDamage"];
+	config.attackCooldown = values["attackCooldown"];
+	config.damageCooldown = values["damageCooldown"];
+    config.attackWidth = values["attackWidth"];
+    config.attackHeight = values["attackHeight"];
 	config.attackEffect = std::make_shared<TDT4102::Image>("assets/characters/dragon/attack_effect.png");
 	config.sprite = std::make_shared<TDT4102::Image>("assets/characters/dragon/left.png");
     config.soundEffect = std::make_shared<TDT4102::Audio>("assets/Audio/dragon.wav");
@@ -76,43 +101,32 @@ InputState Dragon::readInput(float dt, const TDT4102::AnimationWindow& window) {
 
 	const double dx = target->getCenterX() - getCenterX();
 	const double dy = target->getCenterY() - getCenterY();
-
-	constexpr float idleDuration = 5.0f;
-	constexpr float moveDuration = 1.0f;
+    const double distance = std::sqrt(dx * dx + dy * dy);
+	constexpr float idleDuration = 3.2f;
+	constexpr float moveDuration = 1.5f;
 	constexpr float cycleDuration = idleDuration + moveDuration;
 
-    movementTimer += dt;
-	if (movementTimer >= cycleDuration) {
+	movementTimer += dt;
+	while (movementTimer >= cycleDuration) {
 		movementTimer -= cycleDuration;
-    }
+	}
 
 	const bool isMovingPhase = movementTimer >= idleDuration;
-
-	if (isMovingPhase) {
-		attackDirectionTimer = 0.0f;
-		if (std::fabs(dx) > 1.0) {
-			input.right = dx > 0.0;
-			input.left = dx < 0.0;
-		}
-
-		if (std::fabs(dy) > 1.0) {
-			input.down = dy > 0.0;
-			input.up = dy < 0.0;
-		}
+	if (!isMovingPhase) {
 		return input;
 	}
 
-	input.attack = true;
-	constexpr float attackDirectionSwitchInterval = 0.5f;
-	attackDirectionTimer += dt;
-	while (attackDirectionTimer >= attackDirectionSwitchInterval) {
-		attackDirectionTimer -= attackDirectionSwitchInterval;
-		attackFacingRight = !attackFacingRight;
+	if (std::fabs(dx) > 1.0f) {
+		input.right = dx > 0.0f;
+		input.left = dx < 0.0f;
 	}
 
-	input.right = attackFacingRight;
-	input.left = !attackFacingRight;
+	if (std::fabs(dy) > 1.0f) {
+		input.down = dy > 0.0f;
+		input.up = dy < 0.0f;
+	}
 
+	input.attack = true;
 	return input;
 }
 

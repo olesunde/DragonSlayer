@@ -1,0 +1,13 @@
+width=200
+height=120
+spawnX=900
+spawnY=400
+speed=300
+health=1000
+maxHealth=1000
+attackRange=100
+attackDamage=18
+attackCooldown=0.25
+damageCooldown=0.0
+attackWidth=100
+attackHeight=100

@@ -11,8 +11,8 @@ class Camera;
 class World {
 public:
     static const int tileSize = 100;
-    static const int rows = 10;
-    static const int cols = 10;
+    static const int rows = 7;
+    static const int cols = 13;
     
     void generate();
     void draw(TDT4102::AnimationWindow& window, const Camera& camera);

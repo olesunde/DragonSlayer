@@ -1,12 +1,139 @@
+Prosjektdokumentasjon
 
-CHECKLIST FØR INNLEVERING:
+----------------------------------------------------------------
+Vil delta i konkurransen!
+----------------------------------------------------------------
 
-const correctness.
-Private, Protected, Public functionality.
-Include bugs.
-Type correctness.
+Dette prosjektet er et 2D topdown actionspill. Spilleren styrer en pingvin som må kjempe mot flere hvalrosser for å overleve. Når alle hvalrossene er drept går spillet over i en bossfase med en kjempedrage. 
 
+----------------------------------------------------------------
+Hva programmet gjør
+----------------------------------------------------------------
 
-AUDIO:
+1. Starter et spillvindu og initialiserer verden, kamera, lyd og karakterer.
+2. Lar spilleren styre ridderen med tastatur.
+3. Kjører to spillfaser:
+    - Stage 1: hvalrosser spawner til stage1KillGoal er nådd med bakgrunnsmusikk fra Hollow Knight.
+	- Stage 2: dragon-boss spawner etter en tidsforsinkelse med bakgrunnsmusikk fra Ori and the Will of the Wisps.
+4. Oppdaterer bevegelse, sjekker kollisjon, eventuelle angrep, antall liv og animasjon hver frame.
+5. Tegner verden, karakterer, health bars og kill counter for hvalross.
+6. Lar brukeren restarte spillet med R.
 
-Gjøre drage sound effect lavere. Ikke få med plystring i starten av stage2.
+----------------------------------------------------------------
+Kontroller for pingving
+----------------------------------------------------------------
+
+- Bevegelse: W, A, S, D
+- Angrep: SPACE
+- Restart runde: R
+
+----------------------------------------------------------------
+Logikk bak implementasjonen
+----------------------------------------------------------------
+
+Spillet er organisert rundt game loopen "Game::run()". For hver frame gjøres følgende:
+
+1. Sjekker restart "R" og beregner tidssteg (dt).
+2. Oppdaterer kamera til å følge pingvinen i characters med *characters.fron()
+3. Oppdaterer alle karakterer hvis dragen ennå ikke er beseiret.
+4. Sjekker og setter stage.
+5. Tegner verden og karakterer til vinduet gjennom render().
+
+Objektorientering brukes for å dele ansvar:
+
+- Character er baseklasse for karakterene. Klassen har felles bevegelses- og angrepslogikk. felles kamp/bevegelseslogikk.
+- Knight, Walruss og Dragon er subklasser med egendefinert input, animasjon og tegning.
+- World håndterer tiles, blokkering og en cache for rendering. Verden er organisert i en 2d array.
+- Camera transformerer worldkoordinater til skjermkoordinater.
+- Game binder alt sammen.
+
+----------------------------------------------------------------
+Viktige funksjoner
+----------------------------------------------------------------
+
+Kamera og koordinater
+
+- Camera::worldToCamera(...)
+	Konverterer fra world-koordinater til skjermkoordinater basert på kameraets offset.
+	Alle draw-kall går gjennom denne transformasjonen unntatt drawHealthBar for Penguin og Dragon.
+
+- Camera::follow(...)
+	Flytter kamera så det følger pingvinen. Pingvinen er alltid i midten av vinduet.
+
+Gameloop og stages
+
+- Game::run()
+	Kjører restart ("R"), oppdatering, stage-logikk og rendering til vinduet lukkes.
+
+- Game::restart()
+	Nullstiller karakterlister, stage-verdier og starter musikk for stage1.
+
+- Game::stage1()
+	Teller døde hvalrosser, sjekker stage1KillGoal og spawner ny walrus ved behov. Bytter til stage2 når målet er nådd.
+
+- Game::stage2()
+	Starter musikk for stage2, og spawner dragen når tidsforsinkelsen er passert. Tidsforsinkelsen er lagt til slik at dragen spawner på et bestemt punkt i musikken for stage2.
+
+Karakteroppdatering, kamp og animasjon
+
+- Character::update(...)
+	Sentral oppdatering for hver karakter: input, angrep av target (hver karakter blir initialisert med et target), bestemmelse av attack_effect i attackEnemy(...), bevegelse og animasjon.
+
+- Character::updateAnimation(...)
+	Oppdaterer animasjonen med riktig AnimationKey. Animator finner korrekt indeksering til ønsket sprite for input, som hentes ut med getFrame() og brukes i applyAnimationFrame(...). Animation brukes for å oppdatere animasjon etter frame.
+
+- Character::attackEnemy(...)
+	Beregner angrepsretning, variabler for tegning av attack_effect,
+	og gir skade på targets innen rekkevidde dersom damageCooldown er lavere enn attackTimer. damageCooldown er lik null for dragon og walrus, men gjør seg gjeldende for pingvinen.
+
+- Character::isBlocked(...)
+	Kollisjonskontroll mot verden.
+
+- Character::updatePosition(...)
+	Bestemmer bevegelse fra input, normaliserer diagonal bevegelse. Flytter karakteren dersom kollisjonskontroll mot verden er usann.
+
+Verdenslogikk og rendering
+
+- World::rebuildDrawCache()
+	Bygger draw-cache fra tilemap for effektiv tegning hver frame. Trenger ikke laste inn hvert image for tegning.
+
+- World::isBlockedTile(...)
+	Definerer hvilke tiles som blokkerer bevegelse. Ingen karakterer kan gå utenfor verden.
+
+- World::generate()
+	Oppretter verden med egendefinerte tiles og draw-cache.
+
+----------------------------------------------------------------
+Konfigurasjon
+----------------------------------------------------------------
+
+Karakter configs leses fra tekstfiler i Configs/:
+
+- Configs/knight.txt
+- Configs/walruss.txt
+- Configs/dragon.txt
+
+Format per linje: 
+
+key=value
+
+----------------------------------------------------------------
+Bakgrunnsmusikk
+----------------------------------------------------------------
+
+1. stage1Music er "False Knight" av Christopher Larkin. 
+2. stage2Music er "Escaping a Foul Presence" av Gareth Coker.
+
+----------------------------------------------------------------
+Bruk av KI-verktøy
+----------------------------------------------------------------
+
+ChatGPT er blitt brukt for å lage visuals for verden og karakterer. Copilot er blitt brukt for å gi veiledning til optimal arkitektur for prosjektet.
+
+----------------------------------------------------------------
+Refleksjonsnotat
+----------------------------------------------------------------
+
+I løpet av utviklingsprosessen måtte jeg refaktorere programmet flere ganger grunnet arkitekturens manglende evne til å støtte videre utvidelser av programmet. Utfordringen ligger i å finne balansen mellom rask implementasjon av funksjonalitet og å designe en mer generell og fleksibel arkitektur. Samtidig finnes det grenser for hvor fleksibelt programmet kan være uten å bli enormt inneffektivt i utviklingsfasen. Vi bør for eksempel ikke bruke tid på unntakshåndtering som aldri gjør seg gjeldende.
+
+Gjennom refaktorering arbeidet jeg derfor konstant med å forbedre struktur og generalitet i koden, slik at den i større grad kunne håndtere endringer og utvidelser uten omfattende omskriving. Denne prosessen ga meg en bedre forståelse for viktigheten av å planlegge arkitektur med tanke på fremtidig utvikling, samtidig som man må balansere dette opp mot effektiv progresjon i prosjektet.
