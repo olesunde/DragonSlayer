@@ -33,7 +33,7 @@ CharacterConfig Knight::defaultConfig() {
 	config.health = 100.0f;
 	config.maxHealth = 100.0f;
 	config.attackRange = 90.0f;
-	config.attackDamage = 1000.0f;
+	config.attackDamage = 28.0f;
 	config.attackCooldown = 0.75f;
     config.attackWidth = 50.f;
     config.attackHeight = 50.f;
