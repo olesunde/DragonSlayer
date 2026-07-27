@@ -11,4 +11,4 @@ int main() {
         std::cerr << "Programmet krasjet: " << e.what() << std::endl;
         return 1;
     }
-}
+}  
