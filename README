@@ -7,6 +7,38 @@ Vil delta i konkurransen!
 Dette prosjektet er et 2D topdown actionspill. Spilleren styrer en pingvin som må kjempe mot flere hvalrosser for å overleve. Når alle hvalrossene er drept går spillet over i en bossfase med en kjempedrage. 
 
 ----------------------------------------------------------------
+Bygging og kjøring
+----------------------------------------------------------------
+
+Krav:
+
+- MinGW-w64 GCC 14 eller nyere (Windows). Prosjektet lenker mot medfølgende
+  SDL2-binærfiler bygget for x86_64-w64-mingw32, og bruker -lstdc++exp som
+  ikke fantes før GCC 14. MSVC og clang fungerer IKKE på Windows.
+  Anbefalt: WinLibs (POSIX/UCRT) eller MSYS2 UCRT64.
+- Meson og Ninja: pip install meson ninja
+- Linux/macOS: utviklingspakker for SDL2, SDL2_image og SDL2_mixer.
+  Uten disse laster Meson ned og bygger SDL fra kildekode (krever nett).
+
+Bygg og kjør fra denne mappen:
+
+    meson setup build
+    meson compile -C build
+    ./build/program        (Windows: build\program.exe)
+
+Programmet MÅ kjøres med denne mappen som arbeidskatalog, siden bilder og lyd
+lastes via relative stier som assets/characters/... SDL2-DLL-ene kopieres
+automatisk til build/ under bygging.
+
+Bakgrunnsmusikken (assets/Audio/*.mp3) følger ikke med kildekoden, siden den
+er hentet fra Hollow Knight og Ori and the Will of the Wisps. Spillet kjører
+helt normalt uten, bare uten musikk. Legg egne .mp3-filer med navnene
+walrusFight.mp3 og dragonFight.mp3 i assets/Audio/ for å få musikk.
+
+I VS Code: åpne denne mappen (den med meson.build) og trykk F5 for å bygge
+og kjøre, eller Ctrl+Shift+B for kun å bygge.
+
+----------------------------------------------------------------
 Hva programmet gjør
 ----------------------------------------------------------------
 

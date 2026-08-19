@@ -62,7 +62,7 @@ CharacterConfig Penguin::defaultConfig() {
     config.attackWidth = values["attackWidth"];
     config.attackHeight = values["attackHeight"];
 	config.attackEffect = std::make_shared<TDT4102::Image>("assets/characters/penguin/attack_effect.png");
-	config.sprite = std::make_shared<TDT4102::Image>("assets/characters/penguin/idle_down");
+	config.sprite = std::make_shared<TDT4102::Image>("assets/characters/penguin/idle_down.png");
     config.soundEffect = std::make_shared<TDT4102::Audio>("assets/Audio/penguin.wav");
 	return config;
 }

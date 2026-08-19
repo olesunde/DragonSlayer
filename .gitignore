@@ -1,0 +1,28 @@
+# Meson build output (contains absolute paths - never commit)
+build/
+builddir/
+
+# Meson-downloaded subprojects. The vendored ones below are kept on purpose:
+# they are the prebuilt Windows SDL2 binaries the project links against.
+subprojects/packagecache/
+subprojects/*/
+!subprojects/animationwindow/
+!subprojects/std_lib_facilities/
+!subprojects/sdl2_windows/
+!subprojects/sdl2_image_windows/
+!subprojects/sdl2_mixer_windows/
+
+# Background music (third-party, copyrighted - not redistributed).
+# The game runs without these; it just plays silently.
+assets/Audio/*.mp3
+
+# Course hand-in archives
+handin_*.zip
+
+# Editor / OS noise
+*.bak
+*.exe
+*.o
+*.obj
+.DS_Store
+Thumbs.db

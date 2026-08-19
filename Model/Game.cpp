@@ -3,6 +3,23 @@
 #include <Dragon.h>
 #include <Penguin.h>
 #include <Walruss.h>
+#include <iostream>
+
+namespace {
+// Bakgrunnsmusikken distribueres ikke med kildekoden (se .gitignore), saa en
+// manglende lydfil skal ikke krasje spillet - det er fullt spillbart uten lyd.
+void playMusicIfAvailable(TDT4102::AnimationWindow& window, TDT4102::Audio& music) {
+    static bool warned = false;
+    try {
+        window.play_audio(music, 1);
+    } catch (const std::exception& e) {
+        if (!warned) {
+            std::cerr << "Bakgrunnsmusikk mangler, fortsetter uten: " << e.what() << std::endl;
+            warned = true;
+        }
+    }
+}
+}
 
 Game::Game() {
     stage1Music = std::make_unique<TDT4102::Audio>("assets/Audio/walrusFight.mp3");
@@ -59,7 +76,7 @@ void Game::restart() {
     spawnWalruss();
     world.generate();
     timer.restart();
-    window.play_audio(*stage1Music, 1);
+    playMusicIfAvailable(window, *stage1Music);
 }
 
 void Game::update(float dt) {
@@ -125,7 +142,7 @@ void Game::stage2() {
     }
 
     if (!stage2MusicStarted) {
-        window.play_audio(*stage2Music, 1);
+        playMusicIfAvailable(window, *stage2Music);
         stage2MusicStarted = true;
     }
 
