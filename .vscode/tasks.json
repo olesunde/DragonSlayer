@@ -4,7 +4,7 @@
         {
             "type": "shell",
             "label": "Build Executable",
-            "command": "meson",
+            "command": "C:\\Users\\olejs\\AppData\\Roaming\\Python\\Python310\\Scripts\\meson.exe",
             "args": [
                 "compile",
                 "-C",
@@ -33,7 +33,7 @@
             "type": "shell",
             "label": "Configure (meson setup)",
             "detail": "Run once, or after editing meson.build / adding source files.",
-            "command": "meson",
+            "command": "C:\\Users\\olejs\\AppData\\Roaming\\Python\\Python310\\Scripts\\meson.exe",
             "args": [
                 "setup",
                 "build",
